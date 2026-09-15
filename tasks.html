@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JS 20 Scenarios Test Harness</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #212529;
+      --primary: #4361ee;
+      --border: #e9ecef;
+      --error: #e63946;
+    }
+
+    body.dark-theme {
+      --bg: #121214;
+      --card-bg: #1e1e24;
+      --text: #f8f9fa;
+      --border: #33333d;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 24px;
+      transition: background-color 0.2s ease;
+    }
+
+    #scrollProgress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 5px;
+      background: var(--primary);
+      width: 0%;
+      z-index: 9999;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      font-size: 0.95rem;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    button:hover { opacity: 0.9; }
+
+    input, textarea {
+      width: calc(100% - 16px);
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: inherit;
+      color: inherit;
+      margin-bottom: 8px;
+    }
+
+    .input-error { border-color: var(--error) !important; outline: 1px solid var(--error); }
+    .error-text { color: var(--error); font-size: 0.8rem; margin: 0; }
+
+    .drop-box {
+      border: 2px dashed var(--border);
+      padding: 16px;
+      text-align: center;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-box {
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: 8px;
+      min-width: 250px;
+    }
+
+    .accordion-body { display: none; padding-top: 8px; font-size: 0.85rem; }
+    .preview-thumb { max-width: 100%; height: 80px; object-fit: contain; margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+  <div id="scrollProgress"></div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>1. Change Body Background</h3>
+      <button id="colorBtn">Set Dark Slate BG</button>
+      <button onclick="document.body.style.backgroundColor=''">Reset</button>
+    </div>
+
+    <div class="card">
+      <h3>2. Toggle Password Visibility</h3>
+      <input type="password" id="password" value="SuperSecret123" />
+      <button id="toggleBtn">Show</button>
+    </div>
+
+    <div class="card">
+      <h3>3. Real-Time Character Counter</h3>
+      <textarea id="msgBox" rows="2" maxlength="100" placeholder="Max 100 characters..."></textarea>
+      <div id="counter">100 characters left</div>
+    </div>
+
+    <div class="card">
+      <h3>4. Theme Toggle (LocalStorage)</h3>
+      <button id="themeBtn">Toggle Dark/Light</button>
+    </div>
+
+    <div class="card">
+      <h3>5. Accordion Panel</h3>
+      <button class="accordion-header">Toggle Details</button>
+      <div class="accordion-body">Hidden content revealed on click.</div>
+    </div>
+
+    <div class="card">
+      <h3>6. Dynamic To-Do List</h3>
+      <input id="todoInput" placeholder="New item..." />
+      <button id="addBtn">Add</button>
+      <ul id="todoList" style="padding-left: 18px; margin-top: 8px;"></ul>
+    </div>
+
+    <div class="card">
+      <h3>7. Event Delegation</h3>
+      <ul id="userList" style="padding-left: 0; list-style: none;">
+        <li>Alice <button class="delete-user">×</button></li>
+        <li>Bob <button class="delete-user">×</button></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>8. Copy Clipboard</h3>
+      <p id="codeSnippet" style="background:#eee; padding:4px; font-family:monospace; color:#000;">npm install express</p>
+      <button id="copyBtn">Copy</button>
+    </div>
+
+    <div class="card">
+      <h3>9. Live Search Filter</h3>
+      <input id="search" placeholder="Filter fruits..." />
+      <ul id="itemList" style="margin: 0; padding-left: 18px;">
+        <li>Apple</li><li>Banana</li><li>Cherry</li><li>Date</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>10. Dismissable Modal</h3>
+      <button id="openModal">Open Modal</button>
+      <div id="modalOverlay" class="modal-backdrop">
+        <div class="modal-box">
+          <p>Click outside this box to dismiss.</p>
+          <button id="closeModal">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>11. Form Validation</h3>
+      <form id="signupForm" novalidate>
+        <input id="email" type="text" placeholder="user@domain.com" />
+        <p id="emailError" class="error-text"></p>
+        <button type="submit" style="margin-top: 4px;">Submit</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>12. DocumentFragment Insertion</h3>
+      <button id="batchInsertBtn">Insert 1,000 Elements</button>
+      <div id="dataContainer" style="max-height: 80px; overflow-y: auto; margin-top: 8px;"></div>
+    </div>
+
+    <div class="card">
+      <h3>13. Drag & Drop Preview</h3>
+      <div id="dropZone" class="drop-box">Drop an image here</div>
+      <img id="previewImage" class="preview-thumb" hidden />
+    </div>
+
+    <div class="card">
+      <h3>14. Multi-Tab Counter Sync</h3>
+      <p>Count: <strong id="countVal">0</strong></p>
+      <button id="incBtn">+1 (Inspect in Multi-Tabs)</button>
+    </div>
+
+    <div class="card">
+      <h3>15. Reading Progress</h3>
+      <small>Check the fixed blue line at the top while scrolling.</small>
+    </div>
+
+    <div class="card">
+      <h3>16. Debounced Input</h3>
+      <input id="apiSearch" placeholder="Type fast..." />
+      <small id="debounceStatus">Awaiting typing...</small>
+    </div>
+
+    <div class="card">
+      <h3>17. IntersectionObserver Lazy Load</h3>
+      <img data-src="https://picsum.photos/120/60" alt="Lazy Mock" style="min-height: 60px; background: #eee; display: block;" />
+    </div>
+
+    <div class="card">
+      <h3>18. Sentinel Infinite Feed</h3>
+      <div id="postList" style="max-height: 120px; overflow-y: auto; border: 1px solid var(--border); padding: 4px;">
+        <div id="sentinel" style="text-align: center; font-size: 0.8rem;">Loading posts...</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>19. Throttled Mousemove</h3>
+      <div id="coords" style="font-family: monospace;">Move mouse over window</div>
+    </div>
+
+    <div class="card">
+      <h3>20. Reactive Proxy Binder</h3>
+      <input data-bind="text" placeholder="Type here to test Proxy" />
+      <p>Echo: <span data-bind="text" style="font-weight: bold;"></span></p>
+    </div>
+  </div>
+
+  <script>
+    // 1. Change Background Color
+    document.getElementById("colorBtn").addEventListener("click", () => {
+      document.body.style.backgroundColor = "#2b2d42";
+    });
+
+    // 2. Toggle Password Visibility
+    const passInput = document.getElementById("password");
+    const toggleBtn = document.getElementById("toggleBtn");
+    toggleBtn.addEventListener("click", () => {
+      const isPass = passInput.type === "password";
+      passInput.type = isPass ? "text" : "password";
+      toggleBtn.textContent = isPass ? "Hide" : "Show";
+    });
+
+    // 3. Real-Time Character Counter
+    const textarea = document.getElementById("msgBox");
+    const counter = document.getElementById("counter");
+    textarea.addEventListener("input", () => {
+      const remaining = 100 - textarea.value.length;
+      counter.textContent = `${remaining} characters left`;
+      counter.style.color = remaining < 10 ? "red" : "inherit";
+    });
+
+    // 4. Dark Theme with LocalStorage
+    const themeBtn = document.getElementById("themeBtn");
+    if (localStorage.getItem("theme") === "dark") document.body.classList.add("dark-theme");
+    themeBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark-theme");
+      localStorage.setItem("theme", document.body.classList.contains("dark-theme") ? "dark" : "light");
+    });
+
+    // 5. Accordion
+    document.querySelectorAll(".accordion-header").forEach(header => {
+      header.addEventListener("click", () => {
+        const body = header.nextElementSibling;
+        body.style.display = body.style.display === "block" ? "none" : "block";
+      });
+    });
+
+    // 6. Dynamic To-Do List
+    const input = document.getElementById("todoInput");
+    const addBtn = document.getElementById("addBtn");
+    const list = document.getElementById("todoList");
+    addBtn.addEventListener("click", () => {
+      if (!input.value.trim()) return;
+      const li = document.createElement("li");
+      li.textContent = input.value + " ";
+      const del = document.createElement("button");
+      del.textContent = "×";
+      del.addEventListener("click", () => li.remove());
+      li.appendChild(del);
+      list.appendChild(li);
+      input.value = "";
+    });
+
+    // 7. Event Delegation
+    document.getElementById("userList").addEventListener("click", (e) => {
+      if (e.target.matches(".delete-user")) e.target.closest("li").remove();
+    });
+
+    // 8. Copy to Clipboard
+    const copyBtn = document.getElementById("copyBtn");
+    copyBtn.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(document.getElementById("codeSnippet").innerText);
+      copyBtn.textContent = "Copied!";
+      setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
+    });
+
+    // 9. Live Search Filter
+    document.getElementById("search").addEventListener("input", (e) => {
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll("#itemList li").forEach(item => {
+        item.style.display = item.textContent.toLowerCase().includes(q) ? "" : "none";
+      });
+    });
+
+    // 10. Modal Dismiss
+    const modal = document.getElementById("modalOverlay");
+    document.getElementById("openModal").addEventListener("click", () => modal.style.display = "flex");
+    document.getElementById("closeModal").addEventListener("click", () => modal.style.display = "none");
+    window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
+
+    // 11. Custom Form Validation
+    document.getElementById("signupForm").addEventListener("submit", (e) => {
+      const em = document.getElementById("email");
+      const err = document.getElementById("emailError");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value)) {
+        e.preventDefault();
+        em.classList.add("input-error");
+        err.textContent = "Invalid email format.";
+      } else {
+        em.classList.remove("input-error");
+        err.textContent = "";
+      }
+    });
+
+    // 12. Batch Insertion via DocumentFragment
+    document.getElementById("batchInsertBtn").addEventListener("click", () => {
+      const container = document.getElementById("dataContainer");
+      container.innerHTML = "";
+      const frag = document.createDocumentFragment();
+      for (let i = 1; i <= 1000; i++) {
+        const div = document.createElement("div");
+        div.textContent = `Batch Item #${i}`;
+        frag.appendChild(div);
+      }
+      container.appendChild(frag);
+    });
+
+    // 13. Drag-and-Drop Image Preview
+    const dropZone = document.getElementById("dropZone");
+    const preview = document.getElementById("previewImage");
+    dropZone.addEventListener("dragover", (e) => e.preventDefault());
+    dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          preview.src = ev.target.result;
+          preview.hidden = false;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // 14. Multi-Tab Counter Sync
+    const countDisplay = document.getElementById("countVal");
+    const syncCount = () => countDisplay.textContent = localStorage.getItem("globalCount") || "0";
+    document.getElementById("incBtn").addEventListener("click", () => {
+      const c = Number(localStorage.getItem("globalCount") || 0) + 1;
+      localStorage.setItem("globalCount", c);
+      syncCount();
+    });
+    window.addEventListener("storage", (e) => { if (e.key === "globalCount") syncCount(); });
+    syncCount();
+
+    // 15. Reading Progress Indicator
+    window.addEventListener("scroll", () => {
+      const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      document.getElementById("scrollProgress").style.width = `${(document.documentElement.scrollTop / h) * 100}%`;
+    });
+
+    // 16. Debounce Implementation
+    function debounce(fn, delay = 350) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+      };
+    }
+    const statusLabel = document.getElementById("debounceStatus");
+    document.getElementById("apiSearch").addEventListener("input", debounce((e) => {
+      statusLabel.textContent = `Queried API: "${e.target.value}" (${new Date().toLocaleTimeString()})`;
+    }));
+
+    // 17. Lazy Loading with IntersectionObserver
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.src = entry.target.dataset.src;
+          obs.unobserve(entry.target);
+        }
+      });
+    });
+    document.querySelectorAll("img[data-src]").forEach(img => observer.observe(img));
+
+    // 18. Infinite Scroll Sentinel
+    const sentinel = document.getElementById("sentinel");
+    const postBox = document.getElementById("postList");
+    let pageCount = 1;
+    const feedObserver = new IntersectionObserver(async (entries) => {
+      if (entries[0].isIntersecting && pageCount <= 3) {
+        sentinel.textContent = "Loading...";
+        const res = await fetch(`https://jsonplaceholder.typicode.com/posts?_page=${pageCount}&_limit=2`);
+        const posts = await res.json();
+        posts.forEach(p => {
+          const item = document.createElement("div");
+          item.innerHTML = `<small><b>#${p.id} ${p.title}</b></small><hr style="border:0; border-top:1px solid #ddd;"/>`;
+          postBox.insertBefore(item, sentinel);
+        });
+        pageCount++;
+        if (pageCount > 3) sentinel.textContent = "No more posts.";
+      }
+    });
+    feedObserver.observe(sentinel);
+
+    // 19. Throttle Implementation
+    function throttle(fn, limit = 50) {
+      let waiting = false;
+      return (...args) => {
+        if (!waiting) {
+          fn(...args);
+          waiting = true;
+          setTimeout(() => waiting = false, limit);
+        }
+      };
+    }
+    const coords = document.getElementById("coords");
+    window.addEventListener("mousemove", throttle((e) => {
+      coords.textContent = `X: ${e.clientX} | Y: ${e.clientY}`;
+    }));
+
+    // 20. Mini Reactive Proxy Binder
+    const state = new Proxy({ text: "" }, {
+      set(target, prop, val) {
+        target[prop] = val;
+        document.querySelectorAll(`[data-bind="${prop}"]`).forEach(el => {
+          if ("value" in el) el.value = val;
+          else el.textContent = val;
+        });
+        return true;
+      }
+    });
+    const proxyInput = document.querySelector('input[data-bind="text"]');
+    proxyInput.addEventListener("input", (e) => state.text = e.target.value);
+  </script>
+</body>
+</html>
