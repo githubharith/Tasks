@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modular Dashboard App</title>
+  <link rel="stylesheet" href="style1.css" />
+</head>
+<body>
+
+  <!-- VIEW 1: AUTHENTICATION / LOGIN -->
+  <section id="loginView" class="auth-wrapper">
+    <div class="auth-card">
+      <h2>Welcome Back</h2>
+      <p class="subtitle">Please enter your details to sign in.</p>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="admin" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn-primary">Sign In</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- VIEW 2: HOME / DASHBOARD LAYOUT -->
+  <div id="dashboardView" class="app-layout" style="display: none;">
+    
+    <!-- TOP HEADER -->
+    <header class="app-header">
+      <div class="brand">
+        <span class="logo-icon">⚡</span>
+        <h1>DevPortal</h1>
+      </div>
+      <!-- TOP NAVBAR -->
+      <nav class="top-nav">
+        <span class="user-greeting">Hello, <strong id="userDisplay">User</strong></span>
+        <button id="logoutBtn" class="btn-logout">Logout</button>
+      </nav>
+    </header>
+
+    <!-- CORE CONTAINER: SIDEBAR + DYNAMIC MAIN BODY -->
+    <div class="app-body">
+      
+      <!-- SIDEBAR NAVIGATION -->
+      <aside class="sidebar">
+        <ul class="sidebar-menu">
+          <li class="nav-item active" data-tab="overview">
+            <span class="icon">📊</span> Overview
+          </li>
+          <li class="nav-item" data-tab="analytics">
+            <span class="icon">📈</span> Analytics
+          </li>
+          <li class="nav-item" data-tab="users">
+            <span class="icon">👥</span> Users
+          </li>
+          <li class="nav-item" data-tab="settings">
+            <span class="icon">⚙️</span> Settings
+          </li>
+        </ul>
+      </aside>
+
+      <!-- DYNAMIC MAIN CONTENT CONTAINER -->
+      <main class="main-content">
+        
+        <!-- Tab 1: Overview -->
+        <section id="tab-overview" class="tab-pane active">
+          <h2>Dashboard Overview</h2>
+          <p>Welcome to your system dashboard. Select items from the sidebar to inspect views.</p>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <h4>Active Sessions</h4>
+              <p class="metric-number">1,248</p>
+            </div>
+            <div class="metric-card">
+              <h4>Monthly Revenue</h4>
+              <p class="metric-number">$14,290</p>
+            </div>
+            <div class="metric-card">
+              <h4>Server Health</h4>
+              <p class="metric-number status-good">99.98%</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 2: Analytics -->
+        <section id="tab-analytics" class="tab-pane">
+          <h2>Traffic Analytics</h2>
+          <p>Real-time telemetry and user interaction reports.</p>
+          <div class="content-box">
+            <p>Traffic reached peak activity at 14:00 UTC with low latency.</p>
+          </div>
+        </section>
+
+        <!-- Tab 3: Users -->
+        <section id="tab-users" class="tab-pane">
+          <h2>User Management</h2>
+          <p>Directory of registered platform administrators and regular members.</p>
+          <table class="user-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#101</td>
+                <td>Alice Vance</td>
+                <td>Admin</td>
+              </tr>
+              <tr>
+                <td>#102</td>
+                <td>Bob Miller</td>
+                <td>Editor</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Tab 4: Settings -->
+        <section id="tab-settings" class="tab-pane">
+          <h2>System Settings</h2>
+          <p>Configure notifications, security protocols, and theme preferences.</p>
+          <div class="content-box">
+            <label style="display: block; margin-bottom: 8px;">
+              <input type="checkbox" checked /> Enable Email Alerts
+            </label>
+            <label style="display: block;">
+              <input type="checkbox" /> Two-Factor Authentication
+            </label>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- GLOBAL FOOTER -->
+    <footer class="app-footer">
+      <p>&copy; 2026 DevPortal Inc. All rights reserved.</p>
+    </footer>
+
+  </div>
+
+  <script src="script1.js"></script>
+</body>
+</html>
