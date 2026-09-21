@@ -227,7 +227,10 @@
     <div class="card">
       <h3>16. Debounced Input</h3>
       <input id="apiSearch" placeholder="Type fast..." />
-      <small id="debounceStatus">Awaiting typing...</small>
+      <!-- <small id="debounceStatus">Awaiting typing...</small> -->
+      <ul id="queryHistory" style="list-style: none; padding-left: 0; margin: 8px 0 0 0; font-size: 0.8rem; max-height: 120px; overflow-y: auto;">
+        <li style="color: #888;">Awaiting typing... </li>
+      </ul>
     </div>
 
     <div class="card">
@@ -399,16 +402,43 @@
     });
 
     // 16. Debounce Implementation
-    function debounce(fn, delay = 350) {
+    // function debounce(fn, delay = 350) {
+    //   let timer;
+    //   return (...args) => {
+    //     clearTimeout(timer);
+    //     timer = setTimeout(() => fn(...args), delay);
+    //   };
+    // }
+    // const statusLabel = document.getElementById("debounceStatus");
+    // document.getElementById("apiSearch").addEventListener("input", debounce((e) => {
+    //   statusLabel.textContent = `Queried API: "${e.target.value}" (${new Date().toLocaleTimeString()})`;
+    // }));
+    function debounce(fn , delay =350){
       let timer;
       return (...args) => {
         clearTimeout(timer);
-        timer = setTimeout(() => fn(...args), delay);
+        timer=setTimeout(() => fn(...args) , delay);
       };
     }
-    const statusLabel = document.getElementById("debounceStatus");
-    document.getElementById("apiSearch").addEventListener("input", debounce((e) => {
-      statusLabel.textContent = `Queried API: "${e.target.value}" (${new Date().toLocaleTimeString()})`;
+
+
+    const history = document.getElementById("queryHistory");
+    let isFirstQuery = true;
+    document.getElementById("apiSearch").addEventListener("input" , debounce((e) => {
+      const query = e.target.value.trim();
+      const time = new Date().toLocaleTimeString();
+
+      if(isFirstQuery){
+        history.innerHTML = "";
+        isFirstQuery = false;
+      }
+
+      const li= document.createElement("li");
+      li.style.padding = "3px 0";
+      li.style.borderBottom = "1px solid var(--border)";
+      li.innerHTML = `<strong>Queried:</strong> "${query || '[empty]'}" <span style="color : #6c757d;">(${time})</span>`;
+
+      history.appendChild(li);
     }));
 
     // 17. Lazy Loading with IntersectionObserver

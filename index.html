@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management - CRUD & Fetch</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>User Registration Form</h2>
+
+    <!-- Form for Creating or Editing Users -->
+    <form id="userForm">
+      <!-- Hidden field to track if we are updating an existing ID -->
+      <input type="hidden" id="userId">
+
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="Enter name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="Enter email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="role">Role</label>
+        <input type="text" id="role" placeholder="e.g. Student, Developer" required>
+      </div>
+
+      <div class="btn-group">
+        <button type="submit" id="submitBtn">Create User (POST)</button>
+        <button type="button" id="cancelBtn" class="btn-secondary" style="display: none;">Cancel</button>
+      </div>
+    </form>
+
+    <div class="user-list-section">
+      <div class="header-row">
+        <h3>Registered Users</h3>
+        <button id="refreshBtn" class="btn-refresh">Fetch Users (GET)</button>
+      </div>
+      <table id="userTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody">
+          <!-- Dynamically populated via JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 1. Mock DB Engine -->
+  <script src="storage.js"></script>
+  <!-- 2. Your API Service & UI Logic -->
+  <script src="api.js"></script>
+</body>
+</html>
